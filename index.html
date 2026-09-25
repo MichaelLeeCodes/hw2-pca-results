@@ -25,12 +25,12 @@
   <section id="function">
     <h2>The Image Compression Function</h2>
     <p>
-      Given an image stored as an <em>n</em>&nbsp;&times;&nbsp;<em>p</em> matrix <em>X</em>, the function below
-      forms the cross product <em>V</em>&nbsp;=&nbsp;<em>X&prime;X</em>, eigendecomposes it as
-      <em>V</em>&nbsp;=&nbsp;<em>U&Lambda;U&prime;</em>, and computes the principal component scores
-      <em>Z</em>&nbsp;=&nbsp;<em>XU</em>. The rank-<em>k</em> approximation keeps only the first <em>k</em>
+      Here's how I set this up: for an image stored as an <em>n</em>&nbsp;&times;&nbsp;<em>p</em> matrix
+      <em>X</em>, I form the cross product <em>V</em>&nbsp;=&nbsp;<em>X&prime;X</em>, eigendecompose it as
+      <em>V</em>&nbsp;=&nbsp;<em>U&Lambda;U&prime;</em>, and get the principal component scores
+      <em>Z</em>&nbsp;=&nbsp;<em>XU</em>. The rank-<em>k</em> approximation just keeps the first <em>k</em>
       columns of <em>Z</em> and <em>U</em>: <em>X</em><sup>(k)</sup>&nbsp;=&nbsp;<em>Z<sub>k</sub>U<sub>k</sub>&prime;</em>.
-      The approximation error is the Frobenius norm of the residual <em>X</em>&nbsp;&minus;&nbsp;<em>X</em><sup>(k)</sup>.
+      For the error I just take the Frobenius norm of whatever's left over, <em>X</em>&nbsp;&minus;&nbsp;<em>X</em><sup>(k)</sup>.
     </p>
     <pre><code>compress_image &lt;- function(x, k) {
   x &lt;- as.matrix(x)
@@ -85,20 +85,18 @@
 
     <h3>Interpretation</h3>
     <p>
-      At k&nbsp;=&nbsp;10 the reconstruction already captures 83.0% of the total variance, yet it still looks
-      like a field of fine-grained texture &mdash; there is no single dominant large-scale shape for a handful
-      of components to reconstruct. The first eigenvector u&#8321; oscillates rapidly across all 100 columns
-      rather than tracing out one smooth, dominant pattern, which is the signature of an image whose energy is
-      spread thinly across many components instead of concentrated in the first few. The first PC score
-      z&#8321; behaves the same way down the rows: it doesn't follow a smooth trend, so no single row-wise
-      "intensity profile" explains most of the picture. Reaching 95% of the variance takes k&nbsp;=&nbsp;63,
-      and 99% takes k&nbsp;=&nbsp;91 &mdash; almost the full rank of 100.
+      This one honestly surprised me a little. At k&nbsp;=&nbsp;10 we're already capturing 83.0% of the
+      variance, but the reconstruction still just looks like noise &mdash; there's no single big shape for a
+      handful of components to latch onto. You can see it in the eigenvector plot too: u&#8321; is jumping up
+      and down across all 100 columns instead of settling into one smooth curve, which tells me whatever
+      structure is here isn't concentrated in a few directions, it's smeared across a lot of them. Same story
+      for z&#8321; down the rows &mdash; no real trend, just noise. It takes all the way to k&nbsp;=&nbsp;63 to
+      hit 95% of the variance and k&nbsp;=&nbsp;91 for 99%, which is basically the whole image.
     </p>
     <div class="opinion">
-      <strong>My opinion:</strong> Image 1 is the least compressible of the four. I would call the
-      approximation "sufficiently good" only around <strong>k&nbsp;&approx;&nbsp;60&ndash;65</strong>, where it
-      crosses the 95% variance-explained mark; anything under k&nbsp;=&nbsp;10&ndash;20 still looks
-      indistinguishable from noise.
+      If I had to pick one k for this image, I'd go with somewhere around <strong>k&nbsp;&approx;&nbsp;60</strong>,
+      right where it crosses that 95% mark. Anything in the k&nbsp;=&nbsp;10&ndash;20 range still reads as pure
+      noise to me, so I wouldn't call it "good enough" until you're most of the way to full rank.
     </div>
   </section>
 
@@ -127,17 +125,16 @@
 
     <h3>Interpretation</h3>
     <p>
-      Image 2 is the opposite extreme: a single component (k&nbsp;=&nbsp;1) already explains essentially 100%
-      of the variance, and the rank-1 panel in the grid above is visually indistinguishable from the original.
-      The image is dominated by one repeating horizontal-banding pattern, so the first eigenvector u&#8321;
-      is a single smooth profile across the 100 columns that captures that banding directly, and the first PC
-      score z&#8321; simply traces how the intensity of those bands rises and falls down the 1000 rows. Because
-      almost all of the structure lives in this one mode, the rank-1 outer product z&#8321;u&#8321;&prime;
-      alone reconstructs nearly the entire image.
+      This one's the opposite story. A single component already explains basically 100% of the variance, and
+      the rank-1 panel in the grid above is pretty much indistinguishable from the original. It makes sense
+      once you look at the eigenvector: u&#8321; is one smooth profile across the 100 columns that's basically
+      capturing the horizontal banding pattern on its own, and z&#8321; just tracks how strong that banding is
+      as you move down the 1000 rows. There's really only one "mode" doing all the work here, so the rank-1
+      outer product z&#8321;u&#8321;&prime; reconstructs almost the whole image by itself.
     </p>
     <div class="opinion">
-      <strong>My opinion:</strong> Image 2 is extremely compressible. <strong>k&nbsp;=&nbsp;1</strong> is
-      already sufficient; I'd use k&nbsp;=&nbsp;2 only for a small margin of safety.
+      Easiest call of the four &mdash; <strong>k&nbsp;=&nbsp;1</strong> is genuinely enough here. I'd bump it
+      to 2 just so I'm not betting everything on a single number, but that's more caution than necessity.
     </div>
   </section>
 
@@ -166,19 +163,18 @@
 
     <h3>Interpretation</h3>
     <p>
-      This image (a rabbit against a light background) is recognizable by k&nbsp;=&nbsp;2&ndash;3 and quite
-      sharp by k&nbsp;=&nbsp;10, which already captures 95.2% of the total variance. The first eigenvector
-      u&#8321; has a pronounced dip across the middle third of the 345 columns &mdash; that's the dark rabbit
-      body standing out against the lighter blanket/background on either side. The first PC score z&#8321;
-      rises to a broad peak over roughly rows 60&ndash;160 of the 376 rows, which is exactly the vertical band
-      where the rabbit's body sits in the frame. Together, the outer product z&#8321;u&#8321;&prime; is largest
-      exactly where the dark rabbit region overlaps that row band, which is why the rank-1 approximation
-      already outlines the animal's silhouette even before any higher components are added.
+      You can actually tell this is a rabbit by about k&nbsp;=&nbsp;2 or 3, and by k&nbsp;=&nbsp;10 it's
+      pretty sharp &mdash; that's already 95.2% of the total variance. Looking at u&#8321;, there's a big dip
+      across the middle third of the 345 columns, which lines up with the dark body of the rabbit sitting
+      between lighter background on either side. z&#8321; peaks over roughly rows 60&ndash;160 of the 376 rows,
+      which is right where the rabbit sits vertically in the frame. So the rank-1 piece alone
+      (z&#8321;u&#8321;&prime;) is already sketching out the animal's silhouette before any of the other
+      components get added.
     </p>
     <div class="opinion">
-      <strong>My opinion:</strong> <strong>k&nbsp;=&nbsp;10</strong> is already a very good trade-off (95.2%
-      of variance, clearly recognizable). If I wanted crisper edges I'd go up to about
-      k&nbsp;&approx;&nbsp;25&ndash;33 (99% of variance), but 10 is sufficient for most purposes.
+      <strong>k&nbsp;=&nbsp;10</strong> feels like the sweet spot to me &mdash; you're at 95.2% of the variance
+      and the picture already reads clearly as a rabbit. If I wanted the edges a bit crisper I'd push it up
+      toward k&nbsp;&approx;&nbsp;25&ndash;33 (99%), but I don't think it's necessary.
     </div>
   </section>
 
@@ -207,16 +203,15 @@
 
     <h3>Interpretation</h3>
     <p>
-      Image 4 (an outdoor scene with a bright sign) is recognizable by about k&nbsp;=&nbsp;5 and clearly
-      legible &mdash; sign included &mdash; by k&nbsp;=&nbsp;10, which captures 93.9% of the total variance
-      (95% is reached at k&nbsp;=&nbsp;11). The first eigenvector u&#8321; picks out the contrast between the
-      bright sign region and the darker surroundings across the 119 columns, and the first PC score z&#8321;
-      tracks how strongly that bright/dark contrast shows up as you scan down the 213 rows, peaking near the
-      row band where the sign actually sits.
+      This scene (outdoor shot with a bright sign) is readable by about k&nbsp;=&nbsp;5, and by
+      k&nbsp;=&nbsp;10 the whole thing &mdash; sign included &mdash; is legible, at 93.9% of the total variance
+      (95% kicks in right at k&nbsp;=&nbsp;11). u&#8321; is basically picking out the contrast between the
+      bright sign and the darker surroundings across the 119 columns, and z&#8321; tracks how strong that
+      contrast is as you move down the 213 rows, peaking right around where the sign sits.
     </p>
     <div class="opinion">
-      <strong>My opinion:</strong> <strong>k&nbsp;=&nbsp;10&ndash;12</strong> is sufficient here &mdash; the
-      scene layout and the sign text region are both clearly legible by that point.
+      I'd call <strong>k&nbsp;=&nbsp;10&ndash;12</strong> good enough here &mdash; the layout and the sign are
+      both clearly readable by then, and I don't think it gets meaningfully better until you're way further out.
     </div>
   </section>
 
