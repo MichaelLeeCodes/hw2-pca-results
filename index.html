@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PCA for Image Compression — Homework 2</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <h1>PCA for Image Compression</h1>
+  <p>Homework 2 — rank-k PCA approximations of four images, and the compression/quality trade-off for each.</p>
+  <nav class="toc">
+    <a href="#function">Compression Function</a>
+    <a href="#image1">Image 1</a>
+    <a href="#image2">Image 2</a>
+    <a href="#image3">Image 3</a>
+    <a href="#image4">Image 4</a>
+  </nav>
+</header>
+
+<main>
+
+  <section id="function">
+    <h2>The Image Compression Function</h2>
+    <p>
+      Given an image stored as an <em>n</em>&nbsp;&times;&nbsp;<em>p</em> matrix <em>X</em>, the function below
+      forms the cross product <em>V</em>&nbsp;=&nbsp;<em>X&prime;X</em>, eigendecomposes it as
+      <em>V</em>&nbsp;=&nbsp;<em>U&Lambda;U&prime;</em>, and computes the principal component scores
+      <em>Z</em>&nbsp;=&nbsp;<em>XU</em>. The rank-<em>k</em> approximation keeps only the first <em>k</em>
+      columns of <em>Z</em> and <em>U</em>: <em>X</em><sup>(k)</sup>&nbsp;=&nbsp;<em>Z<sub>k</sub>U<sub>k</sub>&prime;</em>.
+      The approximation error is the Frobenius norm of the residual <em>X</em>&nbsp;&minus;&nbsp;<em>X</em><sup>(k)</sup>.
+    </p>
+    <pre><code>compress_image &lt;- function(x, k) {
+  x &lt;- as.matrix(x)
+  p &lt;- ncol(x)
+
+  if (k &lt; 1 || k &gt; p) {
+    stop("k must be between 1 and ncol(x)")
+  }
+
+  V &lt;- t(x) %*% x            # p x p cross product
+  eig &lt;- eigen(V, symmetric = TRUE)
+  U &lt;- eig$vectors           # p x p eigenvectors
+  Z &lt;- x %*% U                # n x p PC scores
+
+  Uk &lt;- U[, 1:k, drop = FALSE]
+  Zk &lt;- Z[, 1:k, drop = FALSE]
+
+  approx &lt;- Zk %*% t(Uk)     # rank-k approximation of x
+  error &lt;- norm(x - approx, type = "F")  # Frobenius norm of the residual
+
+  list(approx = approx, error = error, U = U, Z = Z)
+}</code></pre>
+    <p>
+      The full source, along with the analysis script that produced every plot on this page, is in the
+      <a href="https://github.com/MichaelLeeCodes/hw2-pca-results" target="_blank" rel="noopener">GitHub repository</a>
+      for this project.
+    </p>
+  </section>
+
+  <section id="image1">
+    <h2>Image 1 <span style="font-weight:normal; font-size:1rem; color:var(--muted);">(1000 &times; 100)</span></h2>
+
+    <h3>Original and rank 1&ndash;10 approximations</h3>
+    <figure class="full">
+      <img src="images/image1_grid.png" alt="Image 1 original and rank 1 through 10 PCA approximations">
+    </figure>
+
+    <div class="plot-row">
+      <figure>
+        <img src="images/image1_error.png" alt="Image 1 Frobenius error vs k">
+        <figcaption>Approximation error vs. k, for every k from 1 to 100.</figcaption>
+      </figure>
+      <figure>
+        <img src="images/image1_eigvec.png" alt="Image 1 first eigenvector">
+        <figcaption>First eigenvector u&#8321;.</figcaption>
+      </figure>
+      <figure>
+        <img src="images/image1_pcscore.png" alt="Image 1 first PC score">
+        <figcaption>First PC score z&#8321;.</figcaption>
+      </figure>
+    </div>
+
+    <h3>Interpretation</h3>
+    <p>
+      At k&nbsp;=&nbsp;10 the reconstruction already captures 83.0% of the total variance, yet it still looks
+      like a field of fine-grained texture &mdash; there is no single dominant large-scale shape for a handful
+      of components to reconstruct. The first eigenvector u&#8321; oscillates rapidly across all 100 columns
+      rather than tracing out one smooth, dominant pattern, which is the signature of an image whose energy is
+      spread thinly across many components instead of concentrated in the first few. The first PC score
+      z&#8321; behaves the same way down the rows: it doesn't follow a smooth trend, so no single row-wise
+      "intensity profile" explains most of the picture. Reaching 95% of the variance takes k&nbsp;=&nbsp;63,
+      and 99% takes k&nbsp;=&nbsp;91 &mdash; almost the full rank of 100.
+    </p>
+    <div class="opinion">
+      <strong>My opinion:</strong> Image 1 is the least compressible of the four. I would call the
+      approximation "sufficiently good" only around <strong>k&nbsp;&approx;&nbsp;60&ndash;65</strong>, where it
+      crosses the 95% variance-explained mark; anything under k&nbsp;=&nbsp;10&ndash;20 still looks
+      indistinguishable from noise.
+    </div>
+  </section>
+
+  <section id="image2">
+    <h2>Image 2 <span style="font-weight:normal; font-size:1rem; color:var(--muted);">(1000 &times; 100)</span></h2>
+
+    <h3>Original and rank 1&ndash;10 approximations</h3>
+    <figure class="full">
+      <img src="images/image2_grid.png" alt="Image 2 original and rank 1 through 10 PCA approximations">
+    </figure>
+
+    <div class="plot-row">
+      <figure>
+        <img src="images/image2_error.png" alt="Image 2 Frobenius error vs k">
+        <figcaption>Approximation error vs. k, for every k from 1 to 100.</figcaption>
+      </figure>
+      <figure>
+        <img src="images/image2_eigvec.png" alt="Image 2 first eigenvector">
+        <figcaption>First eigenvector u&#8321;.</figcaption>
+      </figure>
+      <figure>
+        <img src="images/image2_pcscore.png" alt="Image 2 first PC score">
+        <figcaption>First PC score z&#8321;.</figcaption>
+      </figure>
+    </div>
+
+    <h3>Interpretation</h3>
+    <p>
+      Image 2 is the opposite extreme: a single component (k&nbsp;=&nbsp;1) already explains essentially 100%
+      of the variance, and the rank-1 panel in the grid above is visually indistinguishable from the original.
+      The image is dominated by one repeating horizontal-banding pattern, so the first eigenvector u&#8321;
+      is a single smooth profile across the 100 columns that captures that banding directly, and the first PC
+      score z&#8321; simply traces how the intensity of those bands rises and falls down the 1000 rows. Because
+      almost all of the structure lives in this one mode, the rank-1 outer product z&#8321;u&#8321;&prime;
+      alone reconstructs nearly the entire image.
+    </p>
+    <div class="opinion">
+      <strong>My opinion:</strong> Image 2 is extremely compressible. <strong>k&nbsp;=&nbsp;1</strong> is
+      already sufficient; I'd use k&nbsp;=&nbsp;2 only for a small margin of safety.
+    </div>
+  </section>
+
+  <section id="image3">
+    <h2>Image 3 <span style="font-weight:normal; font-size:1rem; color:var(--muted);">(376 &times; 345)</span></h2>
+
+    <h3>Original and rank 1&ndash;10 approximations</h3>
+    <figure class="full">
+      <img src="images/image3_grid.png" alt="Image 3 original and rank 1 through 10 PCA approximations">
+    </figure>
+
+    <div class="plot-row">
+      <figure>
+        <img src="images/image3_error.png" alt="Image 3 Frobenius error vs k">
+        <figcaption>Approximation error vs. k, for every k from 1 to 345.</figcaption>
+      </figure>
+      <figure>
+        <img src="images/image3_eigvec.png" alt="Image 3 first eigenvector">
+        <figcaption>First eigenvector u&#8321;.</figcaption>
+      </figure>
+      <figure>
+        <img src="images/image3_pcscore.png" alt="Image 3 first PC score">
+        <figcaption>First PC score z&#8321;.</figcaption>
+      </figure>
+    </div>
+
+    <h3>Interpretation</h3>
+    <p>
+      This image (a rabbit against a light background) is recognizable by k&nbsp;=&nbsp;2&ndash;3 and quite
+      sharp by k&nbsp;=&nbsp;10, which already captures 95.2% of the total variance. The first eigenvector
+      u&#8321; has a pronounced dip across the middle third of the 345 columns &mdash; that's the dark rabbit
+      body standing out against the lighter blanket/background on either side. The first PC score z&#8321;
+      rises to a broad peak over roughly rows 60&ndash;160 of the 376 rows, which is exactly the vertical band
+      where the rabbit's body sits in the frame. Together, the outer product z&#8321;u&#8321;&prime; is largest
+      exactly where the dark rabbit region overlaps that row band, which is why the rank-1 approximation
+      already outlines the animal's silhouette even before any higher components are added.
+    </p>
+    <div class="opinion">
+      <strong>My opinion:</strong> <strong>k&nbsp;=&nbsp;10</strong> is already a very good trade-off (95.2%
+      of variance, clearly recognizable). If I wanted crisper edges I'd go up to about
+      k&nbsp;&approx;&nbsp;25&ndash;33 (99% of variance), but 10 is sufficient for most purposes.
+    </div>
+  </section>
+
+  <section id="image4">
+    <h2>Image 4 <span style="font-weight:normal; font-size:1rem; color:var(--muted);">(213 &times; 119)</span></h2>
+
+    <h3>Original and rank 1&ndash;10 approximations</h3>
+    <figure class="full">
+      <img src="images/image4_grid.png" alt="Image 4 original and rank 1 through 10 PCA approximations">
+    </figure>
+
+    <div class="plot-row">
+      <figure>
+        <img src="images/image4_error.png" alt="Image 4 Frobenius error vs k">
+        <figcaption>Approximation error vs. k, for every k from 1 to 119.</figcaption>
+      </figure>
+      <figure>
+        <img src="images/image4_eigvec.png" alt="Image 4 first eigenvector">
+        <figcaption>First eigenvector u&#8321;.</figcaption>
+      </figure>
+      <figure>
+        <img src="images/image4_pcscore.png" alt="Image 4 first PC score">
+        <figcaption>First PC score z&#8321;.</figcaption>
+      </figure>
+    </div>
+
+    <h3>Interpretation</h3>
+    <p>
+      Image 4 (an outdoor scene with a bright sign) is recognizable by about k&nbsp;=&nbsp;5 and clearly
+      legible &mdash; sign included &mdash; by k&nbsp;=&nbsp;10, which captures 93.9% of the total variance
+      (95% is reached at k&nbsp;=&nbsp;11). The first eigenvector u&#8321; picks out the contrast between the
+      bright sign region and the darker surroundings across the 119 columns, and the first PC score z&#8321;
+      tracks how strongly that bright/dark contrast shows up as you scan down the 213 rows, peaking near the
+      row band where the sign actually sits.
+    </p>
+    <div class="opinion">
+      <strong>My opinion:</strong> <strong>k&nbsp;=&nbsp;10&ndash;12</strong> is sufficient here &mdash; the
+      scene layout and the sign text region are both clearly legible by that point.
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>
+    Homework 2 &middot; PCA for Image Compression &middot;
+    <a href="https://github.com/MichaelLeeCodes/hw2-pca-results" target="_blank" rel="noopener">Source on GitHub</a>
+    &middot;
+    <a href="#function">Back to top</a>
+  </p>
+</footer>
+
+</body>
+</html>
