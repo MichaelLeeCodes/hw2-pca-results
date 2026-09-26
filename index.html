@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PCA for Image Compression — Homework 2</title>
+<title>PCA for Image Compression — Homework 2 - Michael Lee MJl4564</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -85,18 +85,18 @@
 
     <h3>Interpretation</h3>
     <p>
-      This one honestly surprised me a little. At k&nbsp;=&nbsp;10 we're already capturing 83.0% of the
+      I was suprised by this one. At k&nbsp;=&nbsp;10 we're already capturing 83.0% of the
       variance, but the reconstruction still just looks like noise &mdash; there's no single big shape for a
       handful of components to latch onto. You can see it in the eigenvector plot too: u&#8321; is jumping up
       and down across all 100 columns instead of settling into one smooth curve, which tells me whatever
-      structure is here isn't concentrated in a few directions, it's smeared across a lot of them. Same story
-      for z&#8321; down the rows &mdash; no real trend, just noise. It takes all the way to k&nbsp;=&nbsp;63 to
+      structure is here isn't concentrated in a few directions, it's just gathered across a lot of them. Same story
+      for z&#8321; down the rows &mdash; no real trend, just variance. It takes all the way to k&nbsp;=&nbsp;63 to
       hit 95% of the variance and k&nbsp;=&nbsp;91 for 99%, which is basically the whole image.
     </p>
     <div class="opinion">
       If I had to pick one k for this image, I'd go with somewhere around <strong>k&nbsp;&approx;&nbsp;60</strong>,
       right where it crosses that 95% mark. Anything in the k&nbsp;=&nbsp;10&ndash;20 range still reads as pure
-      noise to me, so I wouldn't call it "good enough" until you're most of the way to full rank.
+      noise to me, so I wouldn't make any good conlusions until you're most of the way to full rank.
     </div>
   </section>
 
@@ -125,16 +125,16 @@
 
     <h3>Interpretation</h3>
     <p>
-      This one's the opposite story. A single component already explains basically 100% of the variance, and
+      This one's the complete opposite as the last one. A single component already explains basically 100% of the variance, and
       the rank-1 panel in the grid above is pretty much indistinguishable from the original. It makes sense
       once you look at the eigenvector: u&#8321; is one smooth profile across the 100 columns that's basically
       capturing the horizontal banding pattern on its own, and z&#8321; just tracks how strong that banding is
-      as you move down the 1000 rows. There's really only one "mode" doing all the work here, so the rank-1
+      as you move down the 1000 rows. There's really only one mode doing all the work here, so the rank 1
       outer product z&#8321;u&#8321;&prime; reconstructs almost the whole image by itself.
     </p>
     <div class="opinion">
       Easiest call of the four &mdash; <strong>k&nbsp;=&nbsp;1</strong> is genuinely enough here. I'd bump it
-      to 2 just so I'm not betting everything on a single number, but that's more caution than necessity.
+      to 2 just so I'm not putting everything on a single number, but that's more safe than necessity.
     </div>
   </section>
 
