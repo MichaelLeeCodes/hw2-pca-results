@@ -4,9 +4,9 @@ Static results website: https://MichaelLeeCodes.github.io/hw2-pca-results/
 
 ## Contents
 
-- `R/compress_image.R` — the rank-k PCA image compression function.
-- `R/analysis.R` — script that runs the function on all four images and generates every plot used on the website.
-- `data/` — the input images as CSV matrices: `image1.csv`, `image2.csv`, `image4.csv` are the originals
+- `R/compress_image.R` :the rank-k PCA image compression function.
+- `R/analysis.R` :script that runs the function on all four images and generates every plot used on the website.
+- `data/` :the input images as CSV matrices: `image1.csv`, `image2.csv`, `image4.csv` are the originals
   provided for the assignment. `image3.csv` (the original rabbit photo) is kept as provided but is no longer
   what's shown on the site — the "Image 3" section on the website was swapped to `image3_photo.csv`, a
   personal photo (grayscale, downsized to 400x300), just to see how the method handles a different kind of
