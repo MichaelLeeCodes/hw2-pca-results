@@ -80,13 +80,15 @@
 
     <h3>Interpretation</h3>
     <p>
-      I was suprised by this one. At k&nbsp;=&nbsp;10 we're already capturing 83.0% of the
-      variance, but the reconstruction still just looks like noise. There's no single big shape for a
-      handful of components to latch onto. You can see it in the eigenvector plot too: u&#8321; is jumping up
-      and down across all 100 columns instead of settling into one smooth curve, which tells me whatever
-      structure is here isn't concentrated in a few directions, it's just gathered across a lot of them. Same story
-      for z&#8321; down the rows, no real trend, just variance. It takes all the way to k&nbsp;=&nbsp;63 to
-      hit 95% of the variance and k&nbsp;=&nbsp;91 for 99%, which is basically the whole image.
+      Looking at u&#8321;, it's flat at zero across almost all 100 columns except for one sharp spike around
+      column 78. That lines up with a real feature in the original image itself: a thin bright vertical
+      stripe near the right side (you can see it in the "Original" panel above). So the first component isn't
+      summarizing the whole image, it's mostly just isolating that one unusually bright column, which is why
+      the rank-1 through rank-10 reconstructions look like flat gray everywhere except that one stripe. z&#8321;
+      down the rows is spiky rather than smooth, which tracks how that stripe's brightness bounces around row
+      by row. The rest of the image (everything besides that stripe) is a lot noisier and needs many more
+      components: it takes all the way to k&nbsp;=&nbsp;63 to hit 95% of the variance and k&nbsp;=&nbsp;91 for
+      99%, which is basically the whole image.
     </p>
     <div class="opinion">
       If I had to pick one k for this image, I'd go with somewhere around <strong>k&nbsp;&approx;&nbsp;60</strong>,
@@ -120,12 +122,14 @@
 
     <h3>Interpretation</h3>
     <p>
-      This one's the complete opposite as the last one. A single component already explains basically 100% of the variance, and
-      the rank-1 panel in the grid above is pretty much indistinguishable from the original. It makes sense
-      once you look at the eigenvector: u&#8321; is one smooth profile across the 100 columns that's basically
-      capturing the horizontal banding pattern on its own, and z&#8321; just tracks how strong that banding is
-      as you move down the 1000 rows. There's really only one mode doing all the work here, so the rank 1
-      outer product z&#8321;u&#8321;&prime; reconstructs almost the whole image by itself.
+      This one's the complete opposite of the last one. A single component already explains basically 100% of
+      the variance, and the rank-1 panel in the grid above is pretty much indistinguishable from the original.
+      Looking at the plots, z&#8321; is doing most of the work: it swings wildly from row to row (from about
+      -3000 up to 4000), and that's what creates the horizontal banding you see in the grid. u&#8321; itself is
+      just a smooth, steadily declining line across the 100 columns, no zigzagging. So each row's brightness
+      is basically set by that row's z&#8321; value, which is why the bands run flat left to right instead of
+      looking tilted or jagged. There's really only one mode doing all the work here, so the rank-1 outer
+      product z&#8321;u&#8321;&prime; reconstructs almost the whole image by itself.
     </p>
     <div class="opinion">
       Easiest call of the four. <strong>k&nbsp;=&nbsp;1</strong> is genuinely enough here. I'd bump it
@@ -160,7 +164,7 @@
     <p>
       You can actually tell this is a dog by about k&nbsp;=&nbsp;2 or 3, and by k&nbsp;=&nbsp;10 it's
       pretty sharp, and that's already 95.2% of the total variance. Looking at u&#8321;, there's a big dip
-      across the middle third of the 345 columns, which lines up with the dark body of the dog sitting
+      across the middle two-thirds of the 345 columns, which lines up with the dark body of the dog sitting
       between lighter background on either side. z&#8321; peaks over roughly rows 60&ndash;160 of the 376 rows,
       which is right where the dog sits vertically in the frame. So the rank-1 piece alone
       (z&#8321;u&#8321;&prime;) is already sketching out the animal's silhouette before any of the other
@@ -198,15 +202,19 @@
 
     <h3>Interpretation</h3>
     <p>
-      This scene (outdoor shot with a bright sign) is readable by about k&nbsp;=&nbsp;5, and by
-      k&nbsp;=&nbsp;10 the whole thing (sign included) is legible, at 93.9% of the total variance
-      (95% kicks in right at k&nbsp;=&nbsp;11). u&#8321; is basically picking out the contrast between the
-      bright sign and the darker surroundings across the 119 columns, and z&#8321; tracks how strong that
-      contrast is as you move down the 213 rows, peaking right around where the sign sits.
+      This one is a mottled, textured image with a distinct bright rectangular patch a bit right of center,
+      plus a couple of smaller bright patches scattered around it. It's recognizable by about k&nbsp;=&nbsp;5,
+      and by k&nbsp;=&nbsp;10 the whole texture is legible, at 93.9% of the total variance (95% kicks in right
+      at k&nbsp;=&nbsp;11). u&#8321; has its biggest dip around column 85 of the 119 columns, and z&#8321; has
+      its biggest dip around row 145 of the 213 rows. Since both are at their most negative in those spots,
+      their product is large and positive right there, which is exactly where that bright rectangular patch
+      sits in the image. That's also why a hint of the patch already shows up in the rank-1 approximation,
+      before any of the other components are added.
     </p>
     <div class="opinion">
-      I'd call <strong>k&nbsp;=&nbsp;10&ndash;12</strong> good enough here. The layout and the sign are
-      both clearly readable by then, and I don't think it gets meaningfully better until you're way further out.
+      I'd call <strong>k&nbsp;=&nbsp;10&ndash;12</strong> good enough here. The overall texture and that
+      bright patch are both clearly visible by then, and I don't think it gets meaningfully better until
+      you're way further out.
     </div>
   </section>
 
