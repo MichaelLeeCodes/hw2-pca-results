@@ -53,6 +53,9 @@
 
   list(approx = approx, error = error, U = U, Z = Z)
 }</code></pre>
+    <p>
+      <a href="R/compress_image.R" download>Download compress_image.R</a>
+    </p>
   </section>
 
   <section id="image1">
@@ -91,9 +94,10 @@
       99%, which is basically the whole image.
     </p>
     <div class="opinion">
-      If I had to pick one k for this image, I'd go with somewhere around <strong>k&nbsp;&approx;&nbsp;60</strong>,
-      right where it crosses that 95% mark. Anything in the k&nbsp;=&nbsp;10&ndash;20 range still reads as pure
-      noise to me, so I wouldn't make any good conlusions until you're most of the way to full rank.
+      If I had to pick one k, I'd go with <strong>k&nbsp;=&nbsp;63</strong>, right where it crosses the 95%
+      mark (Frobenius error &approx;&nbsp;157.7). That one bright stripe is already nailed by k&nbsp;=&nbsp;1,
+      so what you're really paying for past that is the rest of the image, which stays noisy and doesn't
+      clean up until you're most of the way to full rank.
     </div>
   </section>
 
@@ -132,8 +136,9 @@
       product z&#8321;u&#8321;&prime; reconstructs almost the whole image by itself.
     </p>
     <div class="opinion">
-      Easiest call of the four. <strong>k&nbsp;=&nbsp;1</strong> is genuinely enough here. I'd bump it
-      to 2 just so I'm not putting everything on a single number, but that's more safe than necessity.
+      Easiest call of the four. <strong>k&nbsp;=&nbsp;1</strong> is genuinely enough here (Frobenius error
+      &approx;&nbsp;2.0, essentially all the variance). I'd bump it to 2 just so I'm not putting everything on
+      a single number, but that's more safety than necessity.
     </div>
   </section>
 
@@ -171,9 +176,10 @@
       components get added.
     </p>
     <div class="opinion">
-      k&nbsp;=&nbsp;10 feels like the sweet spot to me. You're at 95.2% of the variance and the picture
-      already reads clearly as a dog. If I wanted the edges a bit crisper I'd push it up toward
-      k&nbsp;&approx;&nbsp;25&ndash;33 (99%), but I don't think it's necessary.
+      k&nbsp;=&nbsp;10 feels like the sweet spot to me. You're at 95.2% of the variance (Frobenius error
+      &approx;&nbsp;79.1) and the picture already reads clearly as a dog. If I wanted the edges a bit crisper
+      I'd push it up toward k&nbsp;&approx;&nbsp;25&ndash;33 (98.6%&ndash;99%, error down to about
+      36&ndash;43), but I don't think it's necessary.
     </div>
   </section>
 
@@ -212,9 +218,10 @@
       before any of the other components are added.
     </p>
     <div class="opinion">
-      I'd call <strong>k&nbsp;=&nbsp;10&ndash;12</strong> good enough here. The overall texture and that
-      bright patch are both clearly visible by then, and I don't think it gets meaningfully better until
-      you're way further out.
+      I'd call <strong>k&nbsp;=&nbsp;10&ndash;12</strong> good enough here (Frobenius error drops from about
+      39.2 to 33.1 over that range, 93.9% to 95.7% of the variance). The overall texture and that bright patch
+      are both clearly visible by then, and I don't think it gets meaningfully better until you're way further
+      out.
     </div>
   </section>
 
