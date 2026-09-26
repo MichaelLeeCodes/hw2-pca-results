@@ -53,11 +53,6 @@
 
   list(approx = approx, error = error, U = U, Z = Z)
 }</code></pre>
-    <p>
-      The full source, along with the analysis script that produced every plot on this page, is in the
-      <a href="https://github.com/MichaelLeeCodes/hw2-pca-results" target="_blank" rel="noopener">GitHub repository</a>
-      for this project.
-    </p>
   </section>
 
   <section id="image1">
@@ -139,11 +134,7 @@
   </section>
 
   <section id="image3">
-    <h2>Image 3 <span style="font-weight:normal; font-size:1rem; color:var(--muted);">(400 &times; 300)</span></h2>
-    <p style="color:var(--muted); font-size:0.9rem; margin-top:-0.6rem;">
-      <em>Swapped this one out for a personal photo (grayscale, downsized to 400&times;300) instead of the
-      provided CSV, just to see how the method handles a real face.</em>
-    </p>
+    <h2>Image 3 <span style="font-weight:normal; font-size:1rem; color:var(--muted);">(376 &times; 345)</span></h2>
 
     <h3>Original and rank 1&ndash;10 approximations</h3>
     <figure class="full">
@@ -153,7 +144,7 @@
     <div class="plot-row">
       <figure>
         <img src="images/image3_error.png" alt="Image 3 Frobenius error vs k">
-        <figcaption>Approximation error vs. k, for every k from 1 to 300.</figcaption>
+        <figcaption>Approximation error vs. k, for every k from 1 to 345.</figcaption>
       </figure>
       <figure>
         <img src="images/image3_eigvec.png" alt="Image 3 first eigenvector">
@@ -167,19 +158,18 @@
 
     <h3>Interpretation</h3>
     <p>
-      Even k&nbsp;=&nbsp;1 already sketches out some vertical banding, and by k&nbsp;=&nbsp;5 or 6 you can
-      pick out the shape of my head against the trees behind me. By k&nbsp;=&nbsp;10 it's basically
-      recognizable, at 93.3% of the total variance. u&#8321; dips hardest around column&nbsp;80, which lines
-      up with the dark hair on the left side of the frame, then flattens out through the brighter
-      tree-canopy/face area in the middle, and dips again near the hairline further right. z&#8321; sits
-      around &minus;6 to &minus;10 for most of the rows &mdash; where the face and trees create a lot of
-      left-right contrast for u&#8321; to pick up on &mdash; then swings sharply toward zero over the last
-      ~50 rows. That's the plain dark t-shirt at the bottom of the photo: a flat, uniform region doesn't have
-      much side-to-side variation, so it barely expresses the u&#8321; pattern at all.
+      You can actually tell this is a rabbit by about k&nbsp;=&nbsp;2 or 3, and by k&nbsp;=&nbsp;10 it's
+      pretty sharp &mdash; that's already 95.2% of the total variance. Looking at u&#8321;, there's a big dip
+      across the middle third of the 345 columns, which lines up with the dark body of the rabbit sitting
+      between lighter background on either side. z&#8321; peaks over roughly rows 60&ndash;160 of the 376 rows,
+      which is right where the rabbit sits vertically in the frame. So the rank-1 piece alone
+      (z&#8321;u&#8321;&prime;) is already sketching out the animal's silhouette before any of the other
+      components get added.
     </p>
     <div class="opinion">
-      k&nbsp;=&nbsp;10 already looks like me, but the hair is still a little smeared. I'd push it to about
-      <strong>k&nbsp;&approx;&nbsp;20</strong> (95% of the variance) if I wanted it clean.
+      k&nbsp;=&nbsp;10 feels like the sweet spot to me &mdash; you're at 95.2% of the variance and the picture
+      already reads clearly as a rabbit. If I wanted the edges a bit crisper I'd push it up toward
+      k&nbsp;&approx;&nbsp;25&ndash;33 (99%), but I don't think it's necessary.
     </div>
   </section>
 
@@ -225,8 +215,6 @@
 <footer>
   <p>
     Homework 2 &middot; PCA for Image Compression &middot;
-    <a href="https://github.com/MichaelLeeCodes/hw2-pca-results" target="_blank" rel="noopener">Source on GitHub</a>
-    &middot;
     <a href="#function">Back to top</a>
   </p>
 </footer>
